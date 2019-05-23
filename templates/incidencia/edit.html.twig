@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Editar incidencia{% endblock %}
+
+{% block body %}
+    <h1>Editar incidencia</h1>
+
+    {{ include('incidencia/_form.html.twig', {'button_label': 'actualizar'}) }}
+
+    <a href="{{ path('incidencia_index') }}">Volver</a>
+
+    {{ include('incidencia/_delete_form.html.twig') }}
+{% endblock %}

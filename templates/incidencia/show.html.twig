@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Incidencia{% endblock %}
+
+{% block body %}
+    <h1>Incidencia</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ incidencia.id }}</td>
+        </tr>
+        <tr>
+            <th>Titulo</th>
+            <td>{{ incidencia.titulo }}</td>
+        </tr>
+        <tr>
+            <th>Descripcion</th>
+            <td>{{ incidencia.descripcion }}</td>
+        </tr>
+        <tr>
+            <th>Fecha creacion</th>
+            <td>{{ incidencia.fechaCreacion is not null ? incidencia.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Categoria</th>
+            <td>{{ incidencia.categoria }}</td>
+        </tr>
+        <tr>
+            <th>Tags</th>
+            <td>{{ incidencia.tag | join(', ') }}</td>
+        </tr>
+        <tr>
+            <th>Resuelta</th>
+            <td>{{ incidencia.resuelta == '0' ? 'No' : 'Si'}}</td>
+        </tr>
+        <tr>
+            <th>Fecha resolucion</th>
+            <td>{{ incidencia.fechaResolucion is not null ? incidencia.fechaResolucion|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Imagen</th>
+            <td><img src="../uploads/{{ incidencia.imagenes }}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('incidencia_index') }}">Volver</a>
+
+    <a href="{{ path('incidencia_edit', {'id': incidencia.id}) }}">Editar</a>
+
+    {{ include('incidencia/_delete_form.html.twig') }}
+{% endblock %}

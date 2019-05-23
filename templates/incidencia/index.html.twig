@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% form_theme formSearch 'bootstrap_4_layout.html.twig' %}
+{% block title %}Incidencia index{% endblock %}
+
+{% block body %}
+    <h1>Incidencia index</h1>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ form(formSearch) }}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Fecha creación</th>
+                <th>Categoría</th>
+                <th>Tag</th>
+                <th>Resuelta</th>
+                <th>Fecha resolución</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for inci in incidencias %}
+            <tr>
+                <td>{{ inci.id }}</td>
+                <td>{{ inci.titulo }}</td>
+                <td>{{ inci.descripcion }}</td>
+                <td>{{ inci.fechaCreacion is not null ? inci.fechaCreacion|dateFormat : ''}}</td>
+                <td>{{ inci.categoria }}</td>
+                <td>{{ inci.tag | join(', ') }}</td>
+                <td>{{ inci.resuelta == '0' ? 'No' : 'Si' }}</td>
+                <td>{{ inci.fechaResolucion is not null ? inci.fechaResolucion|date('Y-m-d H:i:s') : ''}}</td>
+                <td>
+                    <a href="{{ path('incidencia_show', {'id': inci.id}) }}">Ver</a>
+                    <a href="{{ path('incidencia_edit', {'id': inci.id}) }}">Editar</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Sin incidencias</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('incidencia_new') }}">Nuevo</a>
+{% endblock %}
