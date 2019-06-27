@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Categoria;
 use App\Entity\Incidencia;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -63,6 +65,26 @@ class IncidenciaRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
 
+    }
+
+    public function findBySomething(array $filters)
+    {
+        $query = $this->createQueryBuilder('i');
+
+//        foreach ($filters as $key => $value) {
+//            $query->andWhere('i.'.$key.' LIKE :'.$key)¡
+//                ->setParameter($key, '%'.$value.'%');
+//        }
+
+        foreach ($filters as $filter) {
+
+            $query->andWhere('i.'.$filter['campo'].' '.$filter['signo'].' :'.$filter['campo'])
+                ->setParameter($filter['campo'], $filter['valor']);
+
+        }
+
+        echo $query->getQuery()->getDQL();
+        return $query->getQuery()->getResult();
     }
 
 }

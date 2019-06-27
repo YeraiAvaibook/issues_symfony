@@ -5,3 +5,5 @@
 #app_first_page:
 #  path: /primera_pagina
 #  controller: App\Controller\PageController::index
+logout:
+    path: /logout

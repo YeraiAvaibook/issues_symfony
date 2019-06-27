@@ -40,6 +40,11 @@ class User implements UserInterface
      */
     private $incidencias;
 
+    /**
+     * @ORM\Column(type="string", length=9, nullable=true)
+     */
+    private $dni;
+
     public function __construct()
     {
         $this->incidencias = new ArrayCollection();
@@ -150,6 +155,18 @@ class User implements UserInterface
                 $incidencia->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDni(): ?string
+    {
+        return $this->dni;
+    }
+
+    public function setDni(?string $dni): self
+    {
+        $this->dni = $dni;
 
         return $this;
     }

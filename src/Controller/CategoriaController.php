@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Categoria;
 use App\Form\CategoriaType;
+use App\Managers\CategoriaManager;
 use App\Repository\CategoriaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,16 +29,15 @@ class CategoriaController extends AbstractController
     /**
      * @Route("/new", name="categoria_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, CategoriaManager $categoriaManager): Response
     {
         $categorium = new Categoria();
         $form = $this->createForm(CategoriaType::class, $categorium);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($categorium);
-            $entityManager->flush();
+
+            $categoriaManager->create($categorium);
 
             return $this->redirectToRoute('categoria_index');
         }
@@ -61,13 +61,13 @@ class CategoriaController extends AbstractController
     /**
      * @Route("/{id}/edit", name="categoria_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Categoria $categorium): Response
+    public function edit(Request $request, Categoria $categorium, CategoriaManager $categoriaManager): Response
     {
         $form = $this->createForm(CategoriaType::class, $categorium);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $categoriaManager->update($categorium);
 
             return $this->redirectToRoute('categoria_index', [
                 'id' => $categorium->getId(),
@@ -83,12 +83,10 @@ class CategoriaController extends AbstractController
     /**
      * @Route("/{id}", name="categoria_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Categoria $categorium): Response
+    public function delete(Request $request, Categoria $categorium, CategoriaManager $categoriaManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$categorium->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($categorium);
-            $entityManager->flush();
+            $categoriaManager->delete($categorium);
         }
 
         return $this->redirectToRoute('categoria_index');

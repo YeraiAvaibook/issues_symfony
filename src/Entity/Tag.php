@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
@@ -22,7 +23,16 @@ class Tag
     private $nombre;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
+     * @Assert\NotNull(
+     *     message="El nombre no puede ser nulo"
+     * )
+     * @Assert\Length(
+     *     min="2",
+     *     max="255",
+     *     minMessage="Demasiado corto",
+     *     maxMessage="Demasiado largo"
+     * )
      */
     private $descripcion;
 

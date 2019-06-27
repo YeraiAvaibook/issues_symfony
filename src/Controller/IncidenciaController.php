@@ -16,6 +16,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @Route("/incidencia")
@@ -34,7 +35,17 @@ class IncidenciaController extends AbstractController
         if($formSearch->isSubmitted()){
             $categoriaSearch = $formSearch->getData()['categoriaSearch'];
             $tituloSearch = $formSearch->getData()['tituloSearch'];
-            $incidencias = $incidenciaRepository->findByTitleAndCategory($categoriaSearch, $tituloSearch);
+
+            $filters = array();
+
+            if(isset($categoriaSearch))
+                $filters[] = array('campo' => 'categoria', 'signo' => '=', 'valor' => $formSearch->getData()['categoriaSearch']);
+
+            if(isset($tituloSearch))
+                $filters[] = array('campo' => 'titulo', 'signo' => 'LIKE', 'valor' => '%'.$formSearch->getData()['tituloSearch'].'%');
+
+            $incidencias =$incidenciaRepository->findBySomething($filters);
+
         }else{
             $incidencias = $incidenciaRepository->findAll();
         }
@@ -55,6 +66,7 @@ class IncidenciaController extends AbstractController
         $form->handleRequest($request);
 
         $user = $securityService->getUser();
+        $user->getId();
 
         if($form->isSubmitted() && $form->isValid()){
 
@@ -82,6 +94,8 @@ class IncidenciaController extends AbstractController
     {
         $mensaje = '';
 
+        $this->denyAccessUnlessGranted('view', $incidencia);
+
         if($messageGenerator->comprobarTexto($incidencia->getTitulo()) !== false){
             $mensaje = $messageGenerator->getMensajeIncidencia();
             $mensaje = $this->addFlash('success', $mensaje);
@@ -98,6 +112,8 @@ class IncidenciaController extends AbstractController
      */
     public function edit(Request $request, Incidencia $incidencia, IncidenciaManager $incidenciaManager): Response
     {
+
+        $this->denyAccessUnlessGranted('edit', $incidencia);
 
         $form = $this->createForm(IncidenciaType::class, $incidencia);
         $form->handleRequest($request);
@@ -123,6 +139,8 @@ class IncidenciaController extends AbstractController
      */
     public function delete(Request $request, Incidencia $incidencia, IncidenciaManager $incidenciaManager): Response
     {
+        $this->denyAccessUnlessGranted('delete', $incidencia);
+
         if($this->isCsrfTokenValid('delete'.$incidencia->getId(), $request->request->get('_token'))){
             $incidenciaManager->delete($incidencia);
         }
